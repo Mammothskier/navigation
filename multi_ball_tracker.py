@@ -95,6 +95,7 @@ class ColorProcessor (threading.Thread):
 	ball = Ball(self.circle_center, self.moment_center, self.radius_circle,
 		self.color, self.color_bounds)
 	return ball
+
 class FrameProcessor(threading.Thread):
 
     def __init__(self, frame, frame_count, color_range, display=False):
@@ -122,7 +123,7 @@ class FrameProcessor(threading.Thread):
         for thread in self.threads:
             ball = thread.join()
             if ball.get_radius() > 10:
-                self.balls[color] = ball
+                self.balls[ball.get_color()] = ball
                 if self.display:
                     (x, y) = ball.get_circle_center()
                     cv2.putText(self.frame, ball.get_color(),
@@ -165,12 +166,6 @@ def process_video(color_range, camera):
             ending_time = timer()
 	    total_time += (ending_time - beginning_time)
             balls = frame_processor.get_balls()
-            print(len(balls))
-            if balls != None and len(balls.values()) > 1:
-                balls = balls.values()
-                #print("unsorted balls", balls.values())
-                sorted_balls = sorted(balls, key=lambda ball: ball.x)
-                print("sorted", sorted_balls[0].x < sorted_balls[1].x)
     except(KeyboardInterrupt):
         pass
     print("average frame time:", (total_time/i))
@@ -193,11 +188,9 @@ if __name__ == "__main__":
     # ball in the HSV color space, then initialize the
     # list of tracked points
     color_range = {
-        'green': {'lower': (14, 45, 69), 'upper': (54, 129, 242)},
-        'red': {'lower': (000, 136, 145), 'upper': (196, 255, 255)},
-        'blue': {'lower': (94, 170, 125), 'upper': (117, 255, 255)},
-        #'white' :{ 'lower': (34, 20, 179), 'upper': (142, 255, 255)},
-        #'orange' : { 'lower': (8, 133,138), 'upper': (25, 255, 255)}
+        'orange' : { 'lower': (5, 112, 93), 'upper': (70, 255, 255)},
+        'green': {'lower': (47, 41, 46), 'upper': (80, 155, 255)},
+        'blue': {'lower': (93, 139, 89), 'upper': (126, 255, 255)}
     }
 
     # if a video path was not supplied, grab the reference
