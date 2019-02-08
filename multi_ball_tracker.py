@@ -17,13 +17,13 @@ class Ball:
     def __init__(self,
             circle_center, moment_center, radius, color, hsv):
         self.circle_center = circle_center
-	self.moment_center = moment_center
-	self.radius = radius
-	self.color = color
-	self.hsv = hsv
+        self.moment_center = moment_center
+        self.radius = radius
+        self.color = color
+        self.hsv = hsv
         self.x = circle_center[0]
 
-	"""
+    """
     Get the center of the ball that is identified by the hsv values.
     Note: This uses cv2.minEnclosingCircle(). This result can be
     different by several pixels from the moment center. The difference
@@ -31,7 +31,7 @@ class Ball:
     """
     def get_circle_center(self):
         return self.circle_center
-	"""
+    """
     Get the center of the ball that is identified by the hsv values.
     Note: This uses cv2.moments(c) to calculate the center pixel of
     the ball. This will always an integer pair.
@@ -78,15 +78,15 @@ class ColorProcessor (threading.Thread):
 
     def run(self):
         mask = cv2.inRange(self.hsv, self.color_bounds['lower'], self.color_bounds['upper'])
-	mask = cv2.erode(mask, None, iterations=2)
-	mask = cv2.dilate(mask, None, iterations=2)
-	cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-	if len(cnts) > 0:
-	    c = max(cnts, key=cv2.contourArea)
-	    (self.circle_center, self.radius_circle) = cv2.minEnclosingCircle(c)
-	    M = cv2.moments(c)
-	    center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-	    if self.radius_circle > 10:
+        mask = cv2.erode(mask, None, iterations=2)
+        mask = cv2.dilate(mask, None, iterations=2)
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        if len(cnts) > 0:
+            c = max(cnts, key=cv2.contourArea)
+            (self.circle_center, self.radius_circle) = cv2.minEnclosingCircle(c)
+            M = cv2.moments(c)
+            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+            if self.radius_circle > 10:
                 self.moment_center = center
 
 
@@ -127,15 +127,15 @@ class FrameProcessor(threading.Thread):
                 if self.display:
                     (x, y) = ball.get_circle_center()
                     cv2.putText(self.frame, ball.get_color(),
-			    (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX,
-			    1, (0, 255, 0), 2)
+                            (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX,
+                            1, (0, 255, 0), 2)
                     cv2.circle(self.frame, (int(x), int(y)), int(ball.get_radius()),
-			    (0, 255, 255), 2)
+                            (0, 255, 255), 2)
                     cv2.circle(self.frame, ball.get_moment_center(), 5,
                             (0, 0, 255), -1)
         if self.display:
             cv2.putText(self.frame, str("frame: " + str(self.frame_count)),
-		    (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             cv2.imshow("Frame", self.frame)
 
     def get_balls(self):
@@ -164,7 +164,7 @@ def process_video(color_range, camera):
             frame_processor.start()
             frame_processor.join()
             ending_time = timer()
-	    total_time += (ending_time - beginning_time)
+            total_time += (ending_time - beginning_time)
             balls = frame_processor.get_balls()
     except(KeyboardInterrupt):
         pass
